@@ -1,7 +1,21 @@
-phpconfig.content:
-  path: '/phpconfig'
+phpconfig.index:
+  path: '/admin/config/development/phpconfig'
   defaults:
-    _controller: 'Drupal\phpconfig\Controller\PhpConfigController::content'
-    _title: 'Hello world'
+    _controller: 'Drupal\phpconfig\Controller\PhpConfigController::index'
+    _title: 'PHP config list'
   requirements:
-    _permission: 'access content'
+    _permission: 'administer phpconfig'
+phpconfig.form.add:
+  path: '/admin/config/development/phpconfig/add'
+  defaults:
+    _form: 'Drupal\phpconfig\Form\PhpConfigForm'
+    _title: 'PHP config list'
+  requirements:
+    _permission: 'administer phpconfig'
+phpconfig.form.edit:
+  path: '/admin/config/development/phpconfig/{configid}/edit'
+  defaults:
+    _form: 'Drupal\phpconfig\Form\PhpConfigForm'
+    _title: 'PHP config list'
+  requirements:
+    _permission: 'administer phpconfig'

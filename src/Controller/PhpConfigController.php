@@ -7,19 +7,45 @@
  */
 
 /**
-@file
-Contains \Drupal\phpconfig\Controller\PhpConfigController.
+ * @file
+ * Contains \Drupal\phpconfig\Controller\PhpConfigController.
  */
 
 namespace Drupal\phpconfig\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Url;
 
 class PhpConfigController extends ControllerBase {
-    public function content() {
-        return array(
-            '#type' => 'markup',
-            '#markup' => t('Hello world'),
+    public function index() {
+        $header = array('Item', 'Value', 'Status', 'Operations');
+        $rows = array();
+
+        $results = db_query("SELECT * FROM {phpconfig_items} ORDER BY item ASC");
+        $output = [];
+        // If we have results.
+        if ($results) {
+            while ($conf = $results->fetchObject()) {
+                $rows[] = array(
+                  $conf->item,
+                  $conf->value,
+                  ($conf->status == 1) ? 'Enabled' : 'Disabled',
+                  \Drupal::l(t('edit'), Url::fromUri('internal:/admin/config/development/phpconfig/'.$conf->configid.'/edit')),
+                );
+            }
+            // Prepare the list table.
+            $output['list'] = array(
+              '#type' => 'table',
+              '#header' => $header,
+              '#rows' => $rows,
+              '#weight' => 1,
+            );
+        }
+        // Add new config link.
+        $output['add_new'] = array(
+          '#type' => 'markup',
+          '#markup' => \Drupal::l(t('Add new'), Url::fromUri('internal:/admin/config/development/phpconfig/add'))
         );
+        return $output;
     }
 }

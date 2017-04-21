@@ -1,4 +1,4 @@
-name: phpconfig
+name: PHP Config
 description: Add PHP level configurations
 package: Development
 type: module
