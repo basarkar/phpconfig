@@ -8,7 +8,7 @@
 
 /**
 @file
-Contains \Drupal\first_module\Controller\FirstController.
+Contains \Drupal\phpconfig\Controller\PhpConfigController.
  */
 
 namespace Drupal\phpconfig\Controller;
