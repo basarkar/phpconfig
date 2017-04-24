@@ -1,7 +1,6 @@
 (function ($) {
   Drupal.behaviors.testPhpConfigBehavior = {
     attach:function (context) {
-      console.log(drupalSettings);
       $('#phpconfig-form').submit(function() {
         var item = $('#edit-item').val();
         var value = $('#edit-value').val();
