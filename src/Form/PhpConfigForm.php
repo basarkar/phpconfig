@@ -76,6 +76,7 @@ class PhpConfigForm extends FormBase {
         '#value' => t('Delete'),
       );
     }
+    $form['#attached']['library'][] = 'phpconfig/phpconfig_test';
     return $form;
   }
   /**
