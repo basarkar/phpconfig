@@ -33,8 +33,10 @@ class PhpConfigForm extends FormBase {
       }
       else {
         $edit_flag = TRUE;
-        //$form_state['op_type'] = "update";
-        //$form_state['configid'] = $config_object->configid;
+        $form['configid'] = array(
+          '#type' => 'hidden',
+          '#value' => $config_object->configid,
+        );
       }
     }
     $form['phpconfig'] = array(
@@ -80,17 +82,67 @@ class PhpConfigForm extends FormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    if (strlen($form_state->getValue('candidate_number')) < 10) {
-      $form_state->setErrorByName('candidate_number', $this->t('Mobile number is too short.'));
+    $values = $form_state->getValues();
+    if ($values['op'] != t('Delete')) {
+      $item = trim($values['item']);
+      $available_config = phpconfig_get_config_by_item($item);
+      // Check are we adding new item at the time of updating.
+      if ($values['configid'] !== NULL && !empty($available_config) && $available_config->configid != $values['configid']) {
+        $form_state->setErrorByName('item', t('The item !item is already in the DB.', array('!item' => $item)));
+      }
+      // Check if we have any existing item already.
+      elseif ($values['configid'] === NULL && !empty($available_config)) {
+        $form_state->setErrorByName('item', t('The item !item is already in the DB.', array('!item' => $item)));
+      }
+      $configs = ini_get_all();
+      if (!isset($configs[$item])) {
+        $form_state->setErrorByName('item', t('!item is not a valid item or not available in your current PHP version.', array('!item' => $item)));
+      }
+      elseif ($configs[$item]['access'] == 2 || $configs[$item]['access'] == 6) {
+        $form_state->setErrorByName('item', t('The item !item can only be set in php.ini, .htaccess or httpd.conf file.', array('!item' => $item)));
+      }
+      elseif ($configs[$item]['access'] == 4) {
+        $form_state->setErrorByName('item', t('The item !item can only be set in php.ini or httpd.conf file.', array('!item' => $item)));
+      }
     }
   }
   /**
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    // drupal_set_message($this->t('@can_name ,Your application is being submitted!', array('@can_name' => $form_state->getValue('candidate_name'))));
-    foreach ($form_state->getValues() as $key => $value) {
-      drupal_set_message($key . ': ' . $value);
+    $values = $form_state->getValues();
+    if ((string)$values['op'] == t('Delete')) {
+      db_query("DELETE FROM {phpconfig_items} WHERE configid = :configid", array(':configid' => $form_state->getValue('configid')));
     }
+    else {
+      $account = \Drupal::currentUser();
+      $item = trim($form_state->getValue('item'));
+      $value = trim($form_state->getValue('value'));
+      if ($values['configid'] !== NULL) {
+        $status = $form_state->getValue('status');
+        $configid = $form_state->getValue('configid');
+        db_update('phpconfig_items')
+          ->fields(array(
+            'uid' => $account->id(),
+            'item' => $item,
+            'value' => $value,
+            'status' => $status,
+          ))
+          ->condition('configid', $configid, '=')
+          ->execute();
+      }
+      elseif ((string)$values['op'] == t('Save')) {
+        db_insert('phpconfig_items')
+          ->fields(array('uid', 'item', 'value', 'status'))
+          ->values(array(
+            'uid' => $account->id(),
+            'item' => $item,
+            'value' => $value,
+            'status' => 1,
+          ))
+          ->execute();
+      }
+    }
+    $form_state->setRedirect('phpconfig.index');
   }
 }
