@@ -77,6 +77,11 @@ class PhpConfigForm extends FormBase {
       );
     }
     $form['#attached']['library'][] = 'phpconfig/phpconfig_test';
+    $form['#attached']['drupalSettings']['phpconfig_test'] = array(
+      'ajaxUrl' => '/admin/config/development/phpconfig/test',
+      'msg' => t('Your current configuration may result into a WSOD!'),
+      'phpconfig_tok' => \Drupal::csrfToken()->get(),
+    );
     return $form;
   }
   /**

@@ -1,17 +1,18 @@
 (function ($) {
   Drupal.behaviors.testPhpConfigBehavior = {
     attach:function (context) {
-      alert('Hello');
-      $('#phpconfig-newform').submit(function() {
+      console.log(drupalSettings);
+      $('#phpconfig-form').submit(function() {
         var item = $('#edit-item').val();
         var value = $('#edit-value').val();
-        var status = $('#edit-status').attr('checked');
-        error_flag = true;
+        var status = $('#edit-status').prop('checked');
+        var error_flag = true;
+
         // Test the new phpconfig via ajax.
         if ((typeof status == 'undefined' || status == true) && item.length != 0 && value.length != 0 && button_pressed == 'edit-submit') {
           $.ajax({
-            url: Drupal.settings.phpconfig_test.ajaxUrl,
-            data: {item: item, value: value, phpconfig_tok: Drupal.settings.phpconfig_test.phpconfig_tok},
+            url: drupalSettings.phpconfig_test.ajaxUrl,
+            data: {item: item, value: value, phpconfig_tok: drupalSettings.phpconfig_test.phpconfig_tok},
             async: false,
             dataType: 'json',
             error: function(jqXHR, textStatus, errorThrown) {
@@ -29,7 +30,7 @@
         }
       });
       var button_pressed;
-      $('#phpconfig-newform .form-submit').click(function() {
+      $('#phpconfig-form .form-submit').click(function() {
           button_pressed = $(this).attr('id');
       })
     }
@@ -37,8 +38,8 @@
 
   Drupal.ajaxFormSetError = function() {
       // Remove any existing error message.
-      $('.messages.error').remove();
-      $('#phpconfig-newform').prepend('<div class="messages error">' + Drupal.settings.phpconfig_test.msg + '</div>');
+      $('.messages--error').remove();
+      $('#phpconfig-form').prepend('<div class="messages messages--error">' + drupalSettings.phpconfig_test.msg + '</div>');
       $('#edit-value').addClass('error');
       $('#edit-item').removeClass('error');
   }

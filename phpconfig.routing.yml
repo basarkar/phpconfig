@@ -5,6 +5,13 @@ phpconfig.index:
     _title: 'PHP config list'
   requirements:
     _permission: 'administer phpconfig'
+phpconfig.test:
+  path: '/admin/config/development/phpconfig/test'
+  defaults:
+    _controller: 'Drupal\phpconfig\Controller\PhpConfigController::test'
+    _title: 'PHP config test'
+  requirements:
+    _permission: 'administer phpconfig'
 phpconfig.form.add:
   path: '/admin/config/development/phpconfig/add'
   defaults:

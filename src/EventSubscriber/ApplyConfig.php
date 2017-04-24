@@ -31,6 +31,21 @@ class ApplyConfig implements EventSubscriberInterface {
         ini_set($value->item, $value->value);
       }
     }
+    // Test the php config.
+    $account = \Drupal::currentUser();
+    $request = \Drupal::request();
+    $requestUrl = $request->server->get('REDIRECT_URL', null);
+    $item = isset($_GET['item']) ? $_GET['item'] : '';
+    $value = isset($_GET['value']) ? $_GET['value'] : '';
+    if (!empty($_GET['phpconfig_tok']) && $requestUrl == '/admin/config/development/phpconfig/test' && $item != '' && $value != '') {
+      // Include common.inc for accessing token functions.
+      //include_once getcwd() . '/includes/common.inc';
+      // Check if user has access and token is valid.
+      if (\Drupal::csrfToken()->validate($_GET['phpconfig_tok']) && ($account->id() == 1 /*|| phpconfig_has_access($user->roles)*/)) {
+        // Setting the new phpconfig item to test.
+        ini_set($item, $value);
+      }
+    }
   }
 
   /**

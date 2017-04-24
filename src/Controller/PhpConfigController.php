@@ -15,6 +15,7 @@ namespace Drupal\phpconfig\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Url;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class PhpConfigController extends ControllerBase {
     public function index() {
@@ -47,5 +48,9 @@ class PhpConfigController extends ControllerBase {
           '#markup' => \Drupal::l(t('Add new'), Url::fromUri('internal:/admin/config/development/phpconfig/add'))
         );
         return $output;
+    }
+
+    public function test() {
+        return new JsonResponse('success');
     }
 }
