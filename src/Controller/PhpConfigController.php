@@ -31,7 +31,7 @@ class PhpConfigController extends ControllerBase {
                   $conf->item,
                   $conf->value,
                   ($conf->status == 1) ? 'Enabled' : 'Disabled',
-                  \Drupal::l(t('edit'), Url::fromUri('internal:/admin/config/development/phpconfig/'.$conf->configid.'/edit')),
+                  \Drupal::l(t('Edit'), Url::fromUri('internal:/admin/config/development/phpconfig/'.$conf->configid.'/edit', array('attributes' => array('class' => 'button button-primary', 'style' => 'margin-bottom:10px;')))),
                 );
             }
             // Prepare the list table.
