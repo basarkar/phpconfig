@@ -129,7 +129,6 @@ class PhpConfigForm extends FormBase {
         $configid = $form_state->getValue('configid');
         db_update('phpconfig_items')
           ->fields(array(
-            'uid' => $account->id(),
             'item' => $item,
             'value' => $value,
             'status' => $status,
@@ -139,9 +138,8 @@ class PhpConfigForm extends FormBase {
       }
       elseif ((string)$values['op'] == t('Save')) {
         db_insert('phpconfig_items')
-          ->fields(array('uid', 'item', 'value', 'status'))
+          ->fields(array('item', 'value', 'status'))
           ->values(array(
-            'uid' => $account->id(),
             'item' => $item,
             'value' => $value,
             'status' => 1,
