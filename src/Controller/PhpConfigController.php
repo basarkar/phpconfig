@@ -45,7 +45,7 @@ class PhpConfigController extends ControllerBase {
         // Add new config link.
         $output['add_new'] = array(
           '#type' => 'markup',
-          '#markup' => \Drupal::l(t('Add new'), Url::fromUri('internal:/admin/config/development/phpconfig/add'))
+          '#markup' => \Drupal::l(t('Add new'), Url::fromUri('internal:/admin/config/development/phpconfig/add', array('attributes' => array('class' => 'button button-primary', 'style' => 'margin-bottom:10px;'))))
         );
         return $output;
     }
